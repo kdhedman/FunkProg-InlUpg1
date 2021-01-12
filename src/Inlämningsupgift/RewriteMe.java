@@ -1,5 +1,6 @@
 package Inlämningsupgift;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -58,35 +59,42 @@ public class RewriteMe {
     //Skapa en lista av alla svarsalternativ, där varje svarsalternativ får förekomma
     // en och endast en gång i den lista som du ska returnera
     public List<String> getAllAnswerOptionsDistinct() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return questions.stream().flatMap(q -> q.getAllAnswers().stream()).distinct().collect(Collectors.toList());
+//        throw new UnsupportedOperationException("Not supported yet.");
 
     }
 
 
     //Finns en viss sträng, given som inparameter, som svarsalternativ till någon fråga i vår databas?
     public boolean isThisAnAnswerOption(String answerCandidate) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return getAllAnswerOptionsDistinct().stream().anyMatch(q -> q.equalsIgnoreCase(answerCandidate));
+//        throw new UnsupportedOperationException("Not supported yet.");
 
     }
 
     //Hur ofta förekommer ett visst svarsalternativ, givet som inparameter, i databasen
     public int getAnswerCandidateFrequncy(String answerCandidate) {
-
-        throw new UnsupportedOperationException("Not supported yet.");
+        return (int) questions.stream().flatMap(q -> q.getAllAnswers().stream()).
+                filter(q -> q.equalsIgnoreCase(answerCandidate)).count();
+//        throw new UnsupportedOperationException("Not supported yet.");
 
     }
 
     //Skapa en Map där kategorierna är nycklar och värdena är en lista
     //av de frågesträngar som tillhör varje kategori
     public Map<Category, List<String>> getQuestionGroupedByCategory() {
-
-        throw new UnsupportedOperationException("Not supported yet.");
+          return questions.stream().collect(Collectors.groupingBy(Question::getCategory,
+                  Collectors.mapping(Question::getQuestionString, Collectors.toList())));
+//        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     //Skapa en funktion som hittar det svarsalternativ som har flest bokstäver, i en kategori, given som inparameter
     // OBS: Du måste använda Reduce!
     public String getLongestLettercountAnwerInAGivenCategory(Category c) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return  questions.stream().filter(q -> q.getCategory() == c).
+                flatMap(q -> q.getAllAnswers().stream()).
+                max(Comparator.comparingInt(s -> s.length())).get();
+//        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 
